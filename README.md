@@ -4,4 +4,4 @@
 
 An algorihtm implementation for finding all D-seperation nodes in a belief network
 
-Reference: Daphne Koller and Nir Friedman, *Probabilistic Graphical Models Principles and Techniques*
+Reference: Daphne Koller and Nir Friedman, *Probabilistic Graphical Models Principles and Techniques*, p74-75.
