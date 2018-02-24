@@ -1,31 +1,48 @@
+// Package dsep finds all D-separeted nodes from a given node in O(n) time complexity.
+//
+// Reference: Daphne Koller and Nir Friedman, Probabilistic Graphical Models Principles and Techniques, p74-75.
 package dsep
 
 import "errors"
 
+// node stores the parents and childs for a given vertex
 type node struct {
 	parents []int
 	childs  []int
 }
 
+// dVertex stores the vertex's id and its traversal direction in the second phase in node searching
 type dVertex struct {
 	id   int
 	isUp bool
 }
 
-// FindDSeperation finds all D-seperation relationship from source node given observations
+// FindDSeperation returns all D-seperation nodes from a source node given a observation set.
+// A node X is D-separeted from Y given obsrvation Z implies X is conditionally independent to Y given Z.
+//
+// AdjList must be labelled from 0 to N-1 in adjacent list format, i.e
+// [[1], [], []] means there is directed edge from 0 to 1, and there is no outgoing edge from 1 or 2.
 func FindDSeperation(adjList [][]int, src int, obs []int) ([]int, error) {
 	var seperated []int
+
 	if isInSlice(src, obs) {
 		return seperated, errors.New("source node should not be in the observation nodes")
+	} else if src > len(adjList) || src < 0 {
+		return seperated, errors.New("source node is not in the adjlist")
 	}
 
+	// convert observation from slice to dict
 	obsDict := make(map[int]bool)
 	for _, vertex := range obs {
 		obsDict[vertex] = true
 	}
+	// convert the adjList to node slice
+	bys := toBysNet(adjList)
 
-	reachable := findReachable(adjList, src, obsDict)
+	// find the reachable nodes from src
+	reachable := findReachable(bys, src, obsDict)
 
+	// convert the d-separated nodes from dict to slice
 	for i := 0; i < len(adjList); i++ {
 		if !reachable[i] && !obsDict[i] && i != src {
 			seperated = append(seperated, i)
@@ -34,10 +51,7 @@ func FindDSeperation(adjList [][]int, src int, obs []int) ([]int, error) {
 	return seperated, nil
 }
 
-func findReachable(adjList [][]int, src int, obs map[int]bool) map[int]bool {
-	// convert the adjList to customized graph
-	bys := toBysNet(adjList)
-
+func findReachable(bys []node, src int, obs map[int]bool) map[int]bool {
 	// ====== Phase 1, Find all ancestors of observations ======
 	ancestors := make(map[int]bool)
 
