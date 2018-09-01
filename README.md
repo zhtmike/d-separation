@@ -9,8 +9,4 @@ Reference: Daphne Koller and Nir Friedman, *Probabilistic Graphical Models Princ
 
 ## Examples
 
-For a simple belief network, e.g. 1 --> 0 <-- 2,
-
-```go
-FindDSeperation(int[][]{[]int{}, []int{0}, []int{0}}, 1, []int{}) == []int{2}
-```
+For a simple belief network, e.g. 1 --> 0 <-- 2, node-1 and node-2 is conditionally independent when node-0 is not observed.

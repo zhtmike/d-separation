@@ -1,6 +1,7 @@
 package dsep
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -51,4 +52,16 @@ func TestFindDSeperatioWithCommonEffect(t *testing.T) {
 			t.Error("Expected ", expect, " got ", ans)
 		}
 	}
+}
+
+// This example creates a Baysian network, where node-0 has two parents: node-1 and node-2,
+// when node-0 is not observed, node-1 is D-separated from node-2.
+func Example_findDSeperatioWithCommonEffect() {
+	ans, err := FindDSeperation([][]int{[]int{}, []int{0}, []int{0}}, 1, []int{})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(ans)
+	// Output:
+	// [2]
 }
